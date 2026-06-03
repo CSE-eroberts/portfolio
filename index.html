@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emma Roberts Portfolio</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#resume">Resume</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="intro-title">
+        <div class="hero__inner">
+          <div class="hero__copy">
+            <div>
+              <h1 id="intro-title">Emma Roberts</h1>
+              <p class="hero__bio">
+                A web development portfolio featuring frontend designs,
+                full-stack projects, and coursework built with HTML, CSS,
+                JavaScript, Node.js, and MongoDB.
+              </p>
+            </div>
+            <a class="hero__button" href="#about">About Me</a>
+          </div>
+
+          <div class="portrait-placeholder" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="page-section" id="about">
+        <div class="section-inner">
+          <p class="section-kicker">About</p>
+          <h2>Hey, I'm Emma!</h2>
+          <p>
+            I'm a senior at the University of South Carolina
+            studying Computer Information Systems with a minor in Business
+            Information Management. I enjoy building websites, solving
+            problems, and learning how technology can make everyday experiences
+            better.
+          </p>
+          <p>
+            Most of my experience is with HTML, CSS, Java, and JavaScript, and
+            my recent projects have helped me explore Node.js, MongoDB, and
+            responsive design. What I like most about development is taking an
+            idea and turning it into something real that people can interact
+            with and use.
+          </p>
+          <p>
+            Right now, I'm focused on continuing to grow as a developer and
+            gaining hands-on experience that will help me build a career in
+            tech.
+          </p>
+        </div>
+      </section>
+
+      <section class="page-section page-section--soft" id="skills">
+        <div class="section-inner">
+          <p class="section-kicker">Skills</p>
+          <h2>Frontend foundations with a design-first eye.</h2>
+          <ul class="skill-list">
+            <li>HTML</li>
+            <li>CSS</li>
+            <li>JavaScript</li>
+            <li>Responsive Design</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="projects-showcase" id="projects" aria-labelledby="projects-title">
+        <div class="projects-heading">
+          <p class="projects-kicker">Projects</p>
+          <h2 id="projects-title">My Projects</h2>
+          <p>
+            I've highlighted my top four projects that demonstrate a range of frontend and backend skills, from layout and design to interactivity and API integration. Below you'll find a brief overview of each project.
+          </p>
+        </div>
+
+        <article class="project-row">
+          <div class="project-row__inner">
+            <a
+              class="project-preview-link"
+              href="https://cse-eroberts.github.io"
+              target="_blank"
+              rel="noopener"
+              aria-label="Open CSCE 242 Web Applications project"
+            >
+              <img
+                class="project-preview project-preview--image"
+                src="assets/csce-242-project.png"
+                alt="CSCE 242 Web Applications assignment page"
+              />
+            </a>
+            <div class="project-details">
+              <h3>CSCE 242 Web Applications</h3>
+              <p>
+                A course portfolio page that organizes web development
+                assignments and highlights HTML, CSS, layout, and JavaScript
+                practice.
+              </p>
+              <ul class="project-tags">
+                <li>HTML</li>
+                <li>CSS</li>
+                <li>JavaScript</li>
+              </ul>
+              <a
+                class="project-action"
+                href="https://cse-eroberts.github.io"
+                target="_blank"
+                rel="noopener"
+              >
+                View Live Page
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-row project-row--right">
+          <div class="project-row__inner">
+            <a
+              class="project-preview-link"
+              href="https://cse-eroberts.github.io/hometowntax/"
+              target="_blank"
+              rel="noopener"
+              aria-label="Open Hometown Tax Website project"
+            >
+              <img
+                class="project-preview project-preview--image"
+                src="assets/hometown-tax-project.png"
+                alt="Hometown Tax website homepage"
+              />
+            </a>
+            <div class="project-details">
+              <h3>Hometown Tax Website</h3>
+              <p>
+                A tax business website built with Node.js, client login
+                functionality, and an integrated Cal scheduling system for
+                booking appointments.
+              </p>
+              <ul class="project-tags">
+                <li>Node.js</li>
+                <li>Cal</li>
+                <li>Client Login</li>
+              </ul>
+              <a
+                class="project-action"
+                href="https://cse-eroberts.github.io/hometowntax/"
+                target="_blank"
+                rel="noopener"
+              >
+                View Live Page
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-row">
+          <div class="project-row__inner">
+            <div
+              class="project-preview project-preview--mock project-preview--weather"
+              aria-hidden="true"
+            ></div>
+            <div class="project-details">
+              <h3>Weather App</h3>
+              <p>
+                A clean weather interface that displays current conditions,
+                forecast details, and location-based results.
+              </p>
+              <ul class="project-tags">
+                <li>API</li>
+                <li>Forms</li>
+                <li>CSS Grid</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <article class="project-row project-row--right">
+          <div class="project-row__inner">
+            <a
+              class="project-preview-link"
+              href="https://cse-eroberts.github.io/todo-frontend/"
+              target="_blank"
+              rel="noopener"
+              aria-label="Open Full-Stack To Do List project"
+            >
+              <img
+                class="project-preview project-preview--image"
+                src="assets/todo-project.png"
+                alt="To Do List app interface"
+              />
+            </a>
+            <div class="project-details">
+              <h3>Full-Stack To Do List</h3>
+              <p>
+                A todo app that combines frontend interaction with a Node.js
+                backend and MongoDB database to add, edit, and manage tasks.
+              </p>
+              <ul class="project-tags">
+                <li>Frontend</li>
+                <li>Node.js</li>
+                <li>MongoDB</li>
+              </ul>
+              <a
+                class="project-action"
+                href="https://cse-eroberts.github.io/todo-frontend/"
+                target="_blank"
+                rel="noopener"
+              >
+                View Live Page
+              </a>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="page-section page-section--soft" id="resume">
+        <div class="section-inner">
+          <p class="section-kicker">Resume</p>
+          <h2>Experience and background.</h2>
+          <p>
+            My resume includes my web development coursework, technical skills,
+            project experience, and the tools I have used to build responsive
+            frontend and full-stack applications.
+          </p>
+          <div class="resume-actions">
+            <a
+              class="resume-button"
+              href="assets/emma-roberts-resume.pdf"
+              target="_blank"
+              rel="noopener"
+            >
+              View Resume
+            </a>
+            <a
+              class="resume-button resume-button--secondary"
+              href="assets/emma-roberts-resume.docx"
+              download="Emma-Roberts-Resume.docx"
+            >
+              Download Resume
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
