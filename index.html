@@ -7,6 +7,28 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <div class="intro-screen" aria-hidden="true">
+      <img
+        class="intro-desktop"
+        src="assets/portfolio-intro-desktop.png"
+        alt=""
+      />
+      <span class="intro-click-pulse"></span>
+      <svg
+        class="intro-cursor"
+        viewBox="0 0 96 118"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M14 8L77 75L45 79L33 109L14 8Z"
+          fill="#ffffff"
+          stroke="#111111"
+          stroke-width="6"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+
     <header class="site-header">
       <nav class="site-nav" aria-label="Primary navigation">
         <a href="#about">About</a>
@@ -250,5 +272,20 @@
         </div>
       </section>
     </main>
+    <script>
+      window.addEventListener("load", () => {
+        const intro = document.querySelector(".intro-screen");
+
+        if (!intro) return;
+
+        intro.addEventListener(
+          "animationend",
+          () => {
+            intro.remove();
+          },
+          { once: true }
+        );
+      });
+    </script>
   </body>
 </html>
