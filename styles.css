@@ -93,7 +93,7 @@ a {
 }
 
 .splash-screen--opening::after {
-  animation: section-reveal-ring 2600ms cubic-bezier(0.22, 1, 0.36, 1)
+  animation: section-reveal-ring 3000ms cubic-bezier(0.22, 1, 0.36, 1)
     forwards;
 }
 
@@ -108,7 +108,7 @@ a {
     transparent var(--reveal-radius),
     #000 calc(var(--reveal-radius) + 1px)
   );
-  animation: section-circle-reveal 2600ms cubic-bezier(0.22, 1, 0.36, 1)
+  animation: section-circle-reveal 3000ms cubic-bezier(0.22, 1, 0.36, 1)
     forwards;
 }
 
@@ -165,7 +165,7 @@ a {
   z-index: 1;
   width: clamp(92px, 10vw, 142px);
   color: var(--accent-dark);
-  --folder-final-scale: 1.38;
+  --folder-final-scale: 1.68;
   font: 700 clamp(0.82rem, 1.4vw, 1rem) Arial, Helvetica, sans-serif;
   text-align: center;
   transition: opacity 240ms ease, transform 240ms ease;
@@ -180,11 +180,11 @@ a {
 .splash-folder--selected {
   z-index: 5;
   pointer-events: none;
-  animation: folder-open-expand 2600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: folder-open-expand 3000ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .splash-folder--selected .splash-folder__label {
-  animation: selected-folder-label-fade 1100ms ease forwards;
+  animation: selected-folder-label-fade 900ms ease forwards;
 }
 
 .splash-folder__icon {
@@ -228,7 +228,7 @@ a {
 }
 
 .splash-folder--selected .splash-folder__icon::before {
-  animation: folder-tab-open 2600ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: folder-tab-open 3000ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .splash-folder__label {
@@ -269,17 +269,26 @@ a {
     transform: translate(0, 0) scale(1);
   }
 
+  52% {
+    transform: translate(
+        var(--folder-open-x, 0px),
+        var(--folder-open-y, 0px)
+      )
+      scale(var(--folder-final-scale, 1.68));
+  }
+
   100% {
     transform: translate(
         var(--folder-open-x, 0px),
         var(--folder-open-y, 0px)
       )
-      scale(var(--folder-final-scale, 1.38));
+      scale(var(--folder-final-scale, 1.68));
   }
 }
 
 @keyframes folder-tab-open {
-  0% {
+  0%,
+  34% {
     transform: translateY(0) skewX(0deg);
   }
 
@@ -289,8 +298,13 @@ a {
 }
 
 @keyframes section-circle-reveal {
-  0% {
-    --reveal-radius: 6vmax;
+  0%,
+  42% {
+    --reveal-radius: 0px;
+  }
+
+  56% {
+    --reveal-radius: 5.6vmax;
   }
 
   100% {
@@ -299,9 +313,15 @@ a {
 }
 
 @keyframes section-reveal-ring {
-  0% {
-    opacity: 0.22;
-    transform: translate(-50%, -50%) scale(0.55);
+  0%,
+  42% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.3);
+  }
+
+  56% {
+    opacity: 0.46;
+    transform: translate(-50%, -50%) scale(0.78);
   }
 
   100% {
