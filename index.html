@@ -6,27 +6,25 @@
     <title>Emma Roberts Portfolio</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
-    <div class="intro-screen" aria-hidden="true">
-      <img
-        class="intro-desktop"
-        src="assets/portfolio-intro-desktop.png"
-        alt=""
-      />
-      <span class="intro-click-pulse"></span>
-      <svg
-        class="intro-cursor"
-        viewBox="0 0 96 118"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M14 8L77 75L45 79L33 109L14 8Z"
-          fill="#ffffff"
-          stroke="#111111"
-          stroke-width="6"
-          stroke-linejoin="round"
-        />
-      </svg>
+  <body class="splash-active">
+    <div class="splash-screen" id="splash-screen">
+      <a class="splash-folder splash-folder--about" href="#about">
+        <span class="splash-folder__icon"></span>
+        <span class="splash-folder__label">About</span>
+      </a>
+      <a class="splash-folder splash-folder--skills" href="#skills">
+        <span class="splash-folder__icon"></span>
+        <span class="splash-folder__label">Skills</span>
+      </a>
+      <a class="splash-folder splash-folder--projects" href="#projects">
+        <span class="splash-folder__icon"></span>
+        <span class="splash-folder__label">Projects</span>
+      </a>
+      <a class="splash-folder splash-folder--resume" href="#resume">
+        <span class="splash-folder__icon"></span>
+        <span class="splash-folder__label">Resume</span>
+      </a>
+      <button class="splash-title" type="button">Emma Roberts</button>
     </div>
 
     <header class="site-header">
@@ -53,7 +51,13 @@
             <a class="hero__button" href="#about">About Me</a>
           </div>
 
-          <div class="portrait-placeholder" aria-hidden="true"></div>
+          <div class="portrait-placeholder">
+            <img
+              class="portrait-placeholder__image"
+              src="assets/emma-headshot.jpg"
+              alt="Emma Roberts"
+            />
+          </div>
         </div>
       </section>
 
@@ -273,18 +277,246 @@
       </section>
     </main>
     <script>
-      window.addEventListener("load", () => {
-        const intro = document.querySelector(".intro-screen");
+      if ("scrollRestoration" in history) {
+        history.scrollRestoration = "manual";
+      }
 
-        if (!intro) return;
+      const splash = document.querySelector("#splash-screen");
+      const splashTitle = document.querySelector(".splash-title");
+      const heroTitle = document.querySelector("#intro-title");
+      const splashFolders = document.querySelectorAll(".splash-folder");
+      const sectionLinks = document.querySelectorAll('a[href^="#"]');
+      const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+      let splashIsOpening = false;
 
-        intro.addEventListener(
-          "animationend",
-          () => {
-            intro.remove();
-          },
-          { once: true }
+      const clearSectionHash = () => {
+        if (window.location.hash) {
+          history.replaceState(
+            null,
+            "",
+            window.location.pathname + window.location.search
+          );
+        }
+      };
+
+      const resetToSplash = () => {
+        window.scrollTo(0, 0);
+        clearSectionHash();
+
+        if (!splash || !document.body.contains(splash)) {
+          window.location.reload();
+          return;
+        }
+
+        splashIsOpening = false;
+        document.body.classList.add("splash-active");
+        splash.classList.remove(
+          "splash-screen--hidden",
+          "splash-screen--opening",
+          "splash-screen--title-opening"
         );
+        splash.style.removeProperty("--wipe-x");
+        splash.style.removeProperty("--wipe-y");
+        splash.style.removeProperty("--reveal-radius");
+        splashTitle?.classList.remove("splash-title--entering");
+        splashTitle?.style.removeProperty("--title-open-x");
+        splashTitle?.style.removeProperty("--title-open-y");
+        splashTitle?.style.removeProperty("--title-open-scale");
+        splashTitle?.style.removeProperty("transform-origin");
+
+        splashFolders.forEach((folder) => {
+          folder.classList.remove("splash-folder--selected");
+          folder.style.removeProperty("--folder-open-x");
+          folder.style.removeProperty("--folder-open-y");
+          folder.style.removeProperty("--folder-final-scale");
+          folder.style.removeProperty("transform-origin");
+        });
+      };
+
+      window.addEventListener("load", resetToSplash);
+
+      window.addEventListener("pageshow", (event) => {
+        if (event.persisted) {
+          resetToSplash();
+        }
+      });
+
+      const scrollToSection = (targetId) => {
+        document.getElementById(targetId)?.scrollIntoView({
+          behavior: "smooth",
+        });
+      };
+
+      const getTextRect = (element) => {
+        const range = document.createRange();
+        range.selectNodeContents(element);
+        const rect = range.getBoundingClientRect();
+        range.detach();
+
+        if (rect.width && rect.height) {
+          return rect;
+        }
+
+        return element.getBoundingClientRect();
+      };
+
+      const prepareSectionBehindSplash = (targetId) => {
+        const section = document.getElementById(targetId);
+
+        if (!section) {
+          return;
+        }
+
+        const previousScrollBehavior =
+          document.documentElement.style.scrollBehavior;
+        const wasSplashActive =
+          document.body.classList.contains("splash-active");
+        document.documentElement.style.scrollBehavior = "auto";
+        document.body.classList.remove("splash-active");
+        section.scrollIntoView({ block: "start" });
+        if (wasSplashActive) {
+          document.body.classList.add("splash-active");
+        }
+        document.documentElement.style.scrollBehavior = previousScrollBehavior;
+      };
+
+      const revealSite = (targetId) => {
+        let revealIsFinished = false;
+
+        document.body.classList.remove("splash-active");
+        splash.classList.add("splash-screen--hidden");
+
+        const finishReveal = (event) => {
+          if (revealIsFinished) {
+            return;
+          }
+
+          if (event && event.target !== splash) {
+            return;
+          }
+
+          revealIsFinished = true;
+          splash.removeEventListener("transitionend", finishReveal);
+          splash.remove();
+
+          if (targetId) {
+            scrollToSection(targetId);
+          }
+        };
+
+        splash.addEventListener("transitionend", finishReveal);
+        window.setTimeout(() => finishReveal(), 520);
+      };
+
+      const openFolder = (folder, targetId) => {
+        if (splashIsOpening) {
+          return;
+        }
+
+        splashIsOpening = true;
+
+        if (prefersReducedMotion) {
+          revealSite(targetId);
+          return;
+        }
+
+        prepareSectionBehindSplash(targetId);
+
+        const folderBox = folder.getBoundingClientRect();
+        const icon = folder.querySelector(".splash-folder__icon");
+        const iconBox = icon.getBoundingClientRect();
+        const folderCenterX = iconBox.left + iconBox.width / 2;
+        const folderCenterY = iconBox.top + iconBox.height / 2;
+        const finalScale = window.innerWidth < 680 ? 1.16 : 1.38;
+        const marginX = Math.min(Math.max(window.innerWidth * 0.055, 24), 54);
+        const marginY = Math.min(Math.max(window.innerHeight * 0.06, 28), 58);
+        const tabHeight = iconBox.height * 0.12;
+        const targetCenterX = marginX + (iconBox.width * finalScale) / 2;
+        const targetCenterY =
+          marginY + (iconBox.height / 2 + tabHeight) * finalScale;
+        const moveX = targetCenterX - folderCenterX;
+        const moveY = targetCenterY - folderCenterY;
+
+        folder.style.setProperty("--folder-open-x", `${moveX}px`);
+        folder.style.setProperty("--folder-open-y", `${moveY}px`);
+        folder.style.setProperty("--folder-final-scale", finalScale.toString());
+        folder.style.transformOrigin = `${
+          folderCenterX - folderBox.left
+        }px ${folderCenterY - folderBox.top}px`;
+        splash.style.setProperty("--wipe-x", "50vw");
+        splash.style.setProperty("--wipe-y", "50vh");
+
+        folder.classList.add("splash-folder--selected");
+        splash.classList.add("splash-screen--opening");
+
+        window.setTimeout(() => {
+          revealSite(targetId);
+        }, 2600);
+      };
+
+      const enterFromTitle = () => {
+        if (splashIsOpening) {
+          return;
+        }
+
+        splashIsOpening = true;
+
+        if (prefersReducedMotion || !heroTitle) {
+          revealSite();
+          return;
+        }
+
+        const splashTitleBox = splashTitle.getBoundingClientRect();
+        const splashTextBox = getTextRect(splashTitle);
+        const heroTextBox = getTextRect(heroTitle);
+        const scale = heroTextBox.width / splashTextBox.width;
+        const textOffsetX = splashTextBox.left - splashTitleBox.left;
+        const textOffsetY = splashTextBox.top - splashTitleBox.top;
+        const moveX =
+          heroTextBox.left - splashTitleBox.left - textOffsetX * scale;
+        const moveY =
+          heroTextBox.top - splashTitleBox.top - textOffsetY * scale;
+
+        splashTitle.style.setProperty("--title-open-x", `${moveX}px`);
+        splashTitle.style.setProperty("--title-open-y", `${moveY}px`);
+        splashTitle.style.setProperty("--title-open-scale", scale.toString());
+        splashTitle.style.transformOrigin = "left top";
+
+        splash.classList.add("splash-screen--title-opening");
+        splashTitle.classList.add("splash-title--entering");
+
+        window.setTimeout(() => {
+          revealSite();
+        }, 1320);
+      };
+
+      splashTitle?.addEventListener("click", enterFromTitle);
+
+      splashFolders.forEach((folder) => {
+        folder.addEventListener("click", (event) => {
+          event.preventDefault();
+          openFolder(folder, folder.getAttribute("href")?.replace("#", ""));
+        });
+      });
+
+      sectionLinks.forEach((link) => {
+        if (link.classList.contains("splash-folder")) {
+          return;
+        }
+
+        link.addEventListener("click", (event) => {
+          const targetId = link.getAttribute("href")?.replace("#", "");
+
+          if (!targetId) {
+            return;
+          }
+
+          event.preventDefault();
+          scrollToSection(targetId);
+          clearSectionHash();
+        });
       });
     </script>
   </body>
