@@ -289,6 +289,7 @@
       const prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)"
       ).matches;
+      const folderRevealDuration = 2200;
       let splashIsOpening = false;
 
       const clearSectionHash = () => {
@@ -317,9 +318,6 @@
           "splash-screen--opening",
           "splash-screen--title-opening"
         );
-        splash.style.removeProperty("--wipe-x");
-        splash.style.removeProperty("--wipe-y");
-        splash.style.removeProperty("--reveal-radius");
         splashTitle?.classList.remove("splash-title--entering");
         splashTitle?.style.removeProperty("--title-open-x");
         splashTitle?.style.removeProperty("--title-open-y");
@@ -328,11 +326,10 @@
 
         splashFolders.forEach((folder) => {
           folder.classList.remove("splash-folder--selected");
-          folder.style.removeProperty("--folder-open-x");
-          folder.style.removeProperty("--folder-open-y");
-          folder.style.removeProperty("--folder-final-scale");
           folder.style.removeProperty("transform-origin");
         });
+
+        splash.querySelector(".folder-transition")?.remove();
       };
 
       window.addEventListener("load", resetToSplash);
@@ -343,10 +340,39 @@
         }
       });
 
-      const scrollToSection = (targetId) => {
-        document.getElementById(targetId)?.scrollIntoView({
+      const highlightSection = (targetId) => {
+        const section = document.getElementById(targetId);
+
+        if (!section) {
+          return;
+        }
+
+        section.classList.remove("section-arrive");
+        void section.offsetWidth;
+        section.classList.add("section-arrive");
+
+        window.setTimeout(() => {
+          section.classList.remove("section-arrive");
+        }, 1400);
+      };
+
+      const scrollToSection = (targetId, shouldHighlight = false) => {
+        const section = document.getElementById(targetId);
+
+        if (!section) {
+          return;
+        }
+
+        section.scrollIntoView({
           behavior: "smooth",
         });
+
+        if (shouldHighlight) {
+          window.setTimeout(
+            () => highlightSection(targetId),
+            prefersReducedMotion ? 0 : 650
+          );
+        }
       };
 
       const getTextRect = (element) => {
@@ -366,26 +392,87 @@
         const section = document.getElementById(targetId);
 
         if (!section) {
+          document.body.classList.remove("splash-active");
           return;
         }
 
         const previousScrollBehavior =
           document.documentElement.style.scrollBehavior;
-        const wasSplashActive =
-          document.body.classList.contains("splash-active");
+
         document.documentElement.style.scrollBehavior = "auto";
         document.body.classList.remove("splash-active");
         section.scrollIntoView({ block: "start" });
-        if (wasSplashActive) {
-          document.body.classList.add("splash-active");
-        }
         document.documentElement.style.scrollBehavior = previousScrollBehavior;
+      };
+
+      const createTransitionPaper = (targetId) => {
+        const paper = document.createElement("div");
+        const section = document.getElementById(targetId);
+
+        paper.className = "folder-transition__paper";
+
+        if (section) {
+          const pagePreview = document.createElement("div");
+          let sectionSibling = section;
+
+          pagePreview.className = "folder-transition__page";
+          pagePreview.setAttribute("aria-hidden", "true");
+
+          while (sectionSibling) {
+            const sectionPreview = sectionSibling.cloneNode(true);
+
+            sectionPreview.removeAttribute("id");
+            sectionPreview.querySelectorAll("[id]").forEach((element) => {
+              element.removeAttribute("id");
+            });
+            sectionPreview
+              .querySelectorAll("a, button, input, select, textarea, [tabindex]")
+              .forEach((element) => {
+                element.setAttribute("tabindex", "-1");
+              });
+
+            pagePreview.append(sectionPreview);
+            sectionSibling = sectionSibling.nextElementSibling;
+          }
+
+          paper.append(pagePreview);
+        }
+
+        return paper;
+      };
+
+      const createFolderTransition = (targetId, iconBox) => {
+        const transition = document.createElement("div");
+        const paper = createTransitionPaper(targetId);
+        const paperWidth = Math.max(iconBox.width * 0.92, 76);
+        const paperHeight = paperWidth * 0.64;
+        const paperLeft = iconBox.left + (iconBox.width - paperWidth) / 2;
+        const paperStartTop = iconBox.bottom - paperHeight - 2;
+        const paperPeekTop = iconBox.top - Math.min(paperHeight * 0.18, 18);
+        const paperEmergeTop = iconBox.top - paperHeight * 0.76;
+
+        transition.className = "folder-transition";
+        transition.setAttribute("aria-hidden", "true");
+        transition.style.setProperty("--paper-left", `${paperLeft}px`);
+        transition.style.setProperty("--paper-start-top", `${paperStartTop}px`);
+        transition.style.setProperty("--paper-peek-top", `${paperPeekTop}px`);
+        transition.style.setProperty("--paper-emerge-top", `${paperEmergeTop}px`);
+        transition.style.setProperty("--paper-width", `${paperWidth}px`);
+        transition.style.setProperty("--paper-height", `${paperHeight}px`);
+
+        transition.append(paper);
+        splash.append(transition);
       };
 
       const revealSite = (targetId) => {
         let revealIsFinished = false;
 
-        document.body.classList.remove("splash-active");
+        if (targetId) {
+          prepareSectionBehindSplash(targetId);
+        } else {
+          document.body.classList.remove("splash-active");
+        }
+
         splash.classList.add("splash-screen--hidden");
 
         const finishReveal = (event) => {
@@ -400,10 +487,6 @@
           revealIsFinished = true;
           splash.removeEventListener("transitionend", finishReveal);
           splash.remove();
-
-          if (targetId) {
-            scrollToSection(targetId);
-          }
         };
 
         splash.addEventListener("transitionend", finishReveal);
@@ -422,34 +505,16 @@
           return;
         }
 
-        prepareSectionBehindSplash(targetId);
-
-        const folderBox = folder.getBoundingClientRect();
         const icon = folder.querySelector(".splash-folder__icon");
         const iconBox = icon.getBoundingClientRect();
-        const folderCenterX = iconBox.left + iconBox.width / 2;
-        const folderCenterY = iconBox.top + iconBox.height / 2;
-        const finalScale = window.innerWidth < 680 ? 1.34 : 1.68;
-        const targetCenterX = window.innerWidth / 2;
-        const targetCenterY = window.innerHeight / 2;
-        const moveX = targetCenterX - folderCenterX;
-        const moveY = targetCenterY - folderCenterY;
-
-        folder.style.setProperty("--folder-open-x", `${moveX}px`);
-        folder.style.setProperty("--folder-open-y", `${moveY}px`);
-        folder.style.setProperty("--folder-final-scale", finalScale.toString());
-        folder.style.transformOrigin = `${
-          folderCenterX - folderBox.left
-        }px ${folderCenterY - folderBox.top}px`;
-        splash.style.setProperty("--wipe-x", "50vw");
-        splash.style.setProperty("--wipe-y", "50vh");
 
         folder.classList.add("splash-folder--selected");
         splash.classList.add("splash-screen--opening");
+        createFolderTransition(targetId, iconBox);
 
         window.setTimeout(() => {
           revealSite(targetId);
-        }, 3000);
+        }, folderRevealDuration);
       };
 
       const enterFromTitle = () => {
