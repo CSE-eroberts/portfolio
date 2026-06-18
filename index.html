@@ -136,14 +136,24 @@
                 <li>CSS</li>
                 <li>JavaScript</li>
               </ul>
-              <a
-                class="project-action"
-                href="https://cse-eroberts.github.io"
-                target="_blank"
-                rel="noopener"
-              >
-                View Live Page
-              </a>
+              <div class="project-actions">
+                <a
+                  class="project-action"
+                  href="https://cse-eroberts.github.io"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  View Live Page
+                </a>
+                <a
+                  class="project-action project-action--secondary"
+                  href="https://github.com/CSE-eroberts/CSE-eroberts.github.io"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  View Repository
+                </a>
+              </div>
             </div>
           </div>
         </article>
@@ -175,14 +185,24 @@
                 <li>Cal</li>
                 <li>Client Login</li>
               </ul>
-              <a
-                class="project-action"
-                href="https://cse-eroberts.github.io/hometowntax/"
-                target="_blank"
-                rel="noopener"
-              >
-                View Live Page
-              </a>
+              <div class="project-actions">
+                <a
+                  class="project-action"
+                  href="https://cse-eroberts.github.io/hometowntax/"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  View Live Page
+                </a>
+                <a
+                  class="project-action project-action--secondary"
+                  href="https://github.com/CSE-eroberts/hometowntax"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  View Repository
+                </a>
+              </div>
             </div>
           </div>
         </article>
@@ -194,15 +214,16 @@
               aria-hidden="true"
             ></div>
             <div class="project-details">
-              <h3>Weather App</h3>
+              <h3>Locked In</h3>
               <p>
-                A clean weather interface that displays current conditions,
-                forecast details, and location-based results.
+                An escape room app that tracks and saves user data during the
+                game, including leaderboard standings, scores, and player
+                progress.
               </p>
               <ul class="project-tags">
-                <li>API</li>
-                <li>Forms</li>
-                <li>CSS Grid</li>
+                <li>Progress Tracking</li>
+                <li>Login System</li>
+                <li>User Data</li>
               </ul>
             </div>
           </div>
@@ -234,14 +255,32 @@
                 <li>Node.js</li>
                 <li>MongoDB</li>
               </ul>
-              <a
-                class="project-action"
-                href="https://cse-eroberts.github.io/todo-frontend/"
-                target="_blank"
-                rel="noopener"
-              >
-                View Live Page
-              </a>
+              <div class="project-actions">
+                <a
+                  class="project-action"
+                  href="https://cse-eroberts.github.io/todo-frontend/"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  View Live Page
+                </a>
+                <a
+                  class="project-action project-action--secondary"
+                  href="https://github.com/CSE-eroberts/todo-frontend"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  View Frontend Repo
+                </a>
+                <a
+                  class="project-action project-action--secondary"
+                  href="https://github.com/CSE-eroberts/todo-backend"
+                  target="_blank"
+                  rel="noopener"
+                >
+                  View Backend Repo
+                </a>
+              </div>
             </div>
           </div>
         </article>
@@ -444,14 +483,19 @@
       const createFolderTransition = (targetId, iconBox) => {
         const transition = document.createElement("div");
         const paper = createTransitionPaper(targetId);
-        const paperWidth = Math.max(iconBox.width * 0.92, 76);
+        const folderFront = document.createElement("div");
+        const paperWidth = Math.max(iconBox.width * 0.78, 68);
         const paperHeight = paperWidth * 0.64;
         const paperLeft = iconBox.left + (iconBox.width - paperWidth) / 2;
         const paperStartTop = iconBox.bottom - paperHeight - 2;
         const paperPeekTop = iconBox.top - Math.min(paperHeight * 0.18, 18);
         const paperEmergeTop = iconBox.top - paperHeight * 0.76;
+        const folderFrontInset = 0.36;
+        const folderFrontTop = iconBox.top + iconBox.height * folderFrontInset;
+        const folderFrontHeight = iconBox.height * (1 - folderFrontInset);
 
         transition.className = "folder-transition";
+        folderFront.className = "folder-transition__front";
         transition.setAttribute("aria-hidden", "true");
         transition.style.setProperty("--paper-left", `${paperLeft}px`);
         transition.style.setProperty("--paper-start-top", `${paperStartTop}px`);
@@ -459,8 +503,12 @@
         transition.style.setProperty("--paper-emerge-top", `${paperEmergeTop}px`);
         transition.style.setProperty("--paper-width", `${paperWidth}px`);
         transition.style.setProperty("--paper-height", `${paperHeight}px`);
+        transition.style.setProperty("--folder-front-left", `${iconBox.left}px`);
+        transition.style.setProperty("--folder-front-top", `${folderFrontTop}px`);
+        transition.style.setProperty("--folder-front-width", `${iconBox.width}px`);
+        transition.style.setProperty("--folder-front-height", `${folderFrontHeight}px`);
 
-        transition.append(paper);
+        transition.append(paper, folderFront);
         splash.append(transition);
       };
 
